@@ -5,5 +5,8 @@ coverage.xml
 dist
 
 .idea
+.vscode
 __pycache__/
 .pytest_cache
+.env
+test.py
