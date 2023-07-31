@@ -26,6 +26,12 @@
             </div>
           </nav>
     </header>
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert {{ category }}" role="alert">{{ message }}</div>
+    {% endfor %}
+    {% endif %}
+
     {% block content %}
     {% if errors.not_valid %}
     <div class="alert alert-danger" role="alert">Некорректный URL</div>

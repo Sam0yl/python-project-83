@@ -1,77 +1,13 @@
 import os
 import datetime
 import psycopg2
-# from dotenv import load_dotenv
+from page_analyzer.url import Url
+from page_analyzer.check import Check
+from dotenv import load_dotenv
 
 
-# load_dotenv()  # take environment variables from .env
+load_dotenv()  # take environment variables from .env
 DATABASE_URL = os.getenv('DATABASE_URL')
-
-
-class Check():
-    def __init__(self, url_id='', created_at='', data={}):
-        DEFAULT_VALUES = {
-            'id': '',
-            'url_id': url_id,
-            'status_code': '',
-            'h1': '',
-            'title': '',
-            'description': '',
-            'created_at': str(created_at)
-            }
-
-        sorted_data = {key: value if value is not None else ''
-                       for key, value in data.items()}
-
-        values = {**DEFAULT_VALUES, **sorted_data}
-
-        self.url_id = values['url_id']
-        self.created_at = str(values['created_at'])
-        self.id = values['id']
-        self.code = values['status_code']
-        self.title = values['title']
-        self.h1 = values['h1']
-        self.description = values['description']
-
-    def __str__(self):
-        return str(self.__dict__)
-
-
-class Url():
-    def __init__(self, name, id='', created_at=''):
-        self.name = name
-        self.id = id
-        self.created_at = created_at
-        self.last_check = ''
-
-    def __str__(self):
-        return str(self.__dict__)
-
-    def set_name(self, name):
-        self.name = name
-
-    def get_name(self):
-        return self.name
-
-    def set_id(self, id):
-        self.id = id
-
-    def get_id(self):
-        return self.id
-
-    def set_created_at(self, date):
-        self.created_at = str(date)
-
-    def get_created_at(self):
-        return self.created_at
-
-    def run_check(self):
-        date = datetime.date.today()
-        self.last_check = Check(self.id, date)
-        return self.last_check
-
-    def set_last_check(self, check):
-        self.last_check = check
 
 
 class UrlRepository():
@@ -144,8 +80,10 @@ class UrlRepository():
         conn = self.connect()
         with conn.cursor() as curs:
             curs.execute(
-                'INSERT INTO url_checks (url_id, created_at) VALUES (%s, %s)',
-                (check.url_id, check.created_at))
+                """INSERT INTO url_checks (url_id, created_at, status_code,
+                title, h1, description) VALUES (%s, %s, %s, %s, %s, %s)""",
+                (check.url_id, check.created_at, check.code, check.title,
+                 check.h1, check.description))
         conn.commit()
         conn.close()
 

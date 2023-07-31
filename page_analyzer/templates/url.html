@@ -1,13 +1,6 @@
 {% extends "index.html" %}
 
 {% block content %}
-{% if messages %}
-    {% for category, message in messages%}
-    <div class="alert {{ category }}" role="alert">{{ message }}</div>
-    {% endfor %}
-{% endif %}
-<!-- <div class="alert alert-success" role="alert">Страница успешно добавлена</div>
-     <div class="alert alert-info" role="alert">Страница уже существует</div> -->
     <main class="flex-grow-1">
         <div class="container-lg mt-3">
             <h1>Сайт: {{ url.name }}</h1>

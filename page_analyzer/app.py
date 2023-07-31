@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, \
     redirect, url_for, flash, get_flashed_messages
-from page_analyzer.data import UrlRepository, Url
+from page_analyzer.repository import UrlRepository
+from page_analyzer.url import Url
 from page_analyzer.validator import validate_url
 
 
@@ -74,8 +75,13 @@ def get_url(id):
 @app.post('/urls/<id>/checks')
 def check(id):
     url = repo.get_url_by_id(id)
-    url.run_check()
+    if url.run_check() is None:
+        flash('Произошла ошибка при проверке', 'alert-danger')
+        return redirect(
+            url_for('get_url', id=url.id)
+            )
     repo.add_url_check(url.last_check)
+    flash('Страница успешно проверена', 'alert-success')
     return redirect(
         url_for('get_url', id=url.id)
         )

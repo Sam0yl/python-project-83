@@ -26,7 +26,9 @@
                                 <td>
                                     {{ url.last_check.created_at }}
                                 </td>
-                                <td></td>
+                                <td>
+                                  {{ url.last_check.code }}
+                                </td>
                             </tr>
                         {% endfor %}
                     </tbody>
