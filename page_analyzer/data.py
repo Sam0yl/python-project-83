@@ -9,7 +9,7 @@ DATABASE_URL = os.getenv('DATABASE_URL')
 
 
 class Check():
-    def __init__(self, url_id='', created_at=datetime.date.today(), data={}):
+    def __init__(self, url_id='', created_at='', data={}):
         DEFAULT_VALUES = {
             'id': '',
             'url_id': url_id,
@@ -66,7 +66,8 @@ class Url():
         return self.created_at
 
     def run_check(self):
-        self.last_check = Check(self.id)
+        date = datetime.date.today()
+        self.last_check = Check(self.id, date)
         return self.last_check
 
     def set_last_check(self, check):
@@ -170,5 +171,7 @@ class UrlRepository():
             db_data = curs.fetchone()
             db_columns = [desc[0] for desc in curs.description]
         conn.close()
+        if not db_data:
+            return Check()
         check_values = dict(zip(db_columns, db_data))
         return Check(data=check_values)
