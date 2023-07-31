@@ -3,10 +3,10 @@ import datetime
 import psycopg2
 from page_analyzer.url import Url
 from page_analyzer.check import Check
-from dotenv import load_dotenv
+#  from dotenv import load_dotenv
 
 
-load_dotenv()  # take environment variables from .env
+#  load_dotenv()  # take environment variables from .env
 DATABASE_URL = os.getenv('DATABASE_URL')
 
 
