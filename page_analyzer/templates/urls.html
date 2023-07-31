@@ -23,7 +23,9 @@
                                 <td> 
                                     <a href="{{ url_for('get_url', id=url.id) }}">{{ url.name }}</a>
                                 </td>
-                                <td></td>
+                                <td>
+                                    {{ url.last_check.created_at }}
+                                </td>
                                 <td></td>
                             </tr>
                         {% endfor %}

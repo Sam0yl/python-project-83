@@ -62,8 +62,20 @@ def read_urls():
 def get_url(id):
     messages = get_flashed_messages(with_categories=True)
     url = repo.get_url_by_id(id)
+    checks = repo.get_url_checks(id)
     return render_template(
             'url.html',
             messages=messages,
+            checks=checks,
             url=url
             )
+
+
+@app.post('/urls/<id>/checks')
+def check(id):
+    url = repo.get_url_by_id(id)
+    url.run_check()
+    repo.add_url_check(url.last_check)
+    return redirect(
+        url_for('get_url', id=url.id)
+        )
