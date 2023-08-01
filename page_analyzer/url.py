@@ -47,7 +47,3 @@ class Url():
 
     def set_last_check(self, check):
         self.last_check = check
-
-
-u = Url('http://book.com/page')
-print(u.name)
