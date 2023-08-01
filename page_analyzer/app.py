@@ -60,10 +60,10 @@ def get_url(id):
     url = repo.get_url_by_id(id)
     checks = repo.get_url_checks(id)
     return render_template(
-            'url.html',
-            messages=messages,
-            checks=checks,
-            url=url)
+        'url.html',
+        messages=messages,
+        checks=checks,
+        url=url)
 
 
 @app.post('/urls/<id>/checks')
