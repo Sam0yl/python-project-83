@@ -15,19 +15,23 @@ def connect_db():
     return connect
 
 
-def execute_sql_query(connect, query, params=None):
+def execute_sql_query(connect, query, params=None, columns=False):
     with connect.cursor() as curs:
         curs.execute(query, params)
         try:
-            result = curs.fetchall()
-            return result
+            values = curs.fetchall()
+            if columns:
+                columns = [desc[0] for desc in curs.description]
+                result = [dict(zip(columns, value)) for value in values]
+                return result
+            return values
         except Exception:
             return
 
 
 class UrlRepository():
 
-    def is_url_in_repository(self, url):
+    def url_in_repository(self, url):
         conn = connect_db()
         result = execute_sql_query(
             conn,
@@ -39,7 +43,7 @@ class UrlRepository():
         return True
 
     def add_url(self, url):
-        if not self.is_url_in_repository(url):
+        if not self.url_in_repository(url):
             conn = connect_db()
             created_at = str(datetime.date.today())
             execute_sql_query(
@@ -50,7 +54,7 @@ class UrlRepository():
             conn.close()
 
     def assign_url_id(self, url):
-        if self.is_url_in_repository(url):
+        if self.url_in_repository(url):
             conn = connect_db()
             url_data = execute_sql_query(
                 conn,
@@ -97,27 +101,24 @@ class UrlRepository():
 
     def get_url_checks(self, url_id):
         conn = connect_db()
-        with conn.cursor() as curs:
-            curs.execute('SELECT * FROM url_checks WHERE url_id=%s', (url_id,))
-            db_data = curs.fetchall()
-            db_columns = [desc[0] for desc in curs.description]
+        url_checks_data = execute_sql_query(
+            conn,
+            'SELECT * FROM url_checks WHERE url_id=%s',
+            (url_id,),
+            columns=True)
         conn.close()
-        db_data.reverse()
-        checks_values = [dict(zip(db_columns, values)) for values in db_data]
-        checks = [CheckData(data=values) for values in checks_values]
-        return checks
+        url_checks_data.reverse()
+        return [CheckData(data=values) for values in url_checks_data]
 
     def get_last_url_check(self, url_id):
         conn = connect_db()
-        with conn.cursor() as curs:
-            curs.execute(
-                'SELECT * FROM url_checks WHERE url_id=%s \
-                ORDER BY id DESC LIMIT 1',
-                (url_id,))
-            db_data = curs.fetchone()
-            db_columns = [desc[0] for desc in curs.description]
+        last_check_data = execute_sql_query(
+            conn,
+            """SELECT * FROM url_checks WHERE url_id=%s
+             ORDER BY id DESC LIMIT 1""",
+            (url_id,),
+            columns=True)
         conn.close()
-        if not db_data:
+        if not last_check_data:
             return CheckData()
-        check_values = dict(zip(db_columns, db_data))
-        return CheckData(data=check_values)
+        return CheckData(data=last_check_data[0])

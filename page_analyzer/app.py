@@ -35,7 +35,7 @@ def add_url():
             'index.html',
             errors=errors,
             url=url.name), 422
-    if not repo.is_url_in_repository(url):
+    if not repo.url_in_repository(url):
         repo.add_url(url)
         repo.assign_url_id(url)
         flash('Страница успешно добавлена', 'alert-success')
