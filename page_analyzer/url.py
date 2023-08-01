@@ -1,14 +1,23 @@
 import datetime
 import requests
+import validators
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup
 from page_analyzer.check import CheckData
 
 
+def set_name(url):
+    if not validators.url(url):
+        name = url
+    else:
+        url_code = urlparse(url)
+        name = f'{url_code.scheme}://{url_code.netloc}'
+    return name
+
+
 class Url():
     def __init__(self, url, id='', created_at=''):
-        self.url_code = urlparse(url)
-        self.name = f'{self.url_code.scheme}://{self.url_code.netloc}'
+        self.name = set_name(url)
         self.id = id
         self.created_at = created_at
         self.last_check = ''
@@ -16,28 +25,11 @@ class Url():
     def __str__(self):
         return str(self.__dict__)
 
-    def set_name(self, name):
-        self.name = name
-
-    def get_name(self):
-        return self.name
-
-    def set_id(self, id):
-        self.id = id
-
-    def get_id(self):
-        return self.id
-
-    def set_created_at(self, date):
-        self.created_at = str(date)
-
-    def get_created_at(self):
-        return self.created_at
-
     def run_check(self):
         date = datetime.date.today()
         try:
             response = requests.get(self.name)
+            response.raise_for_status()
         except Exception:
             return None
         html = BeautifulSoup(response.text, "html.parser")
@@ -55,3 +47,7 @@ class Url():
 
     def set_last_check(self, check):
         self.last_check = check
+
+
+u = Url('http://book.com/page')
+print(u.name)

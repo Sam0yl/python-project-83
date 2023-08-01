@@ -49,8 +49,8 @@ class UrlRepository():
                 url_data = curs.fetchall()
             conn.close()
         id, created_at = url_data[0]
-        url.set_id(id)
-        url.set_created_at(created_at)
+        url.id = id
+        url.created_at = created_at
 
     def get_url_by_id(self, url_id):
         conn = self.connect()
