@@ -7,8 +7,7 @@ class CheckData():
             'h1': '',
             'title': '',
             'description': '',
-            'created_at': str(created_at)
-            }
+            'created_at': str(created_at)}
 
         sorted_data = {key: value if value is not None else ''
                        for key, value in data.items()}
