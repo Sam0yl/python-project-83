@@ -2,7 +2,7 @@ import os
 import datetime
 import psycopg2
 from page_analyzer.url import Url
-from page_analyzer.check import Check
+from page_analyzer.check import CheckData
 from dotenv import load_dotenv
 
 
@@ -96,7 +96,7 @@ class UrlRepository():
         conn.close()
         db_data.reverse()
         checks_values = [dict(zip(db_columns, values)) for values in db_data]
-        checks = [Check(data=values) for values in checks_values]
+        checks = [CheckData(data=values) for values in checks_values]
         return checks
 
     def get_last_url_check(self, url_id):
@@ -110,6 +110,6 @@ class UrlRepository():
             db_columns = [desc[0] for desc in curs.description]
         conn.close()
         if not db_data:
-            return Check()
+            return CheckData()
         check_values = dict(zip(db_columns, db_data))
-        return Check(data=check_values)
+        return CheckData(data=check_values)

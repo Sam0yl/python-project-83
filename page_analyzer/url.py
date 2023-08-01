@@ -1,12 +1,14 @@
 import datetime
 import requests
+from urllib.parse import urlparse
 from bs4 import BeautifulSoup
-from page_analyzer.check import Check
+from page_analyzer.check import CheckData
 
 
 class Url():
-    def __init__(self, name, id='', created_at=''):
-        self.name = name
+    def __init__(self, url, id='', created_at=''):
+        self.url_code = urlparse(url)
+        self.name = f'{self.url_code.scheme}://{self.url_code.netloc}'
         self.id = id
         self.created_at = created_at
         self.last_check = ''
@@ -48,7 +50,7 @@ class Url():
             'description': '' if meta_tag is None else meta_tag['content']
         }
 
-        self.last_check = Check(self.id, date, data)
+        self.last_check = CheckData(self.id, date, data)
         return self.last_check
 
     def set_last_check(self, check):

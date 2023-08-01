@@ -1,4 +1,4 @@
-class Check():
+class CheckData():
     def __init__(self, url_id='', created_at='', data={}):
         DEFAULT_VALUES = {
             'id': '',
