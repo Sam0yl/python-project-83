@@ -1,16 +1,16 @@
+import os
 from flask import Flask, render_template, request, \
     redirect, url_for, flash, get_flashed_messages
 from page_analyzer.repository import UrlRepository
 from page_analyzer.url import Url
 from page_analyzer.validator import validate_url
+from dotenv import load_dotenv
 
+load_dotenv()
 
 app = Flask(__name__)
 
-app.secret_key = "secret_key"
-# необходима доработка секретного ключа через dotenv и переменную окружения
-# app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
-
+app.secret_key = os.getenv('SECRET_KEY', 'secret_key')
 
 repo = UrlRepository()
 
